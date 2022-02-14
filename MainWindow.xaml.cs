@@ -22,4 +22,46 @@ namespace AutomatedVehicle
             InitializeComponent();
         }
     }
+
+
+
+    public class Car
+    {
+        public double Speed { get; set; }
+        public RoadTypes RoadType { get; set; }
+        public double RouteLength { get; set; }
+
+        public enum RoadTypes { Normal, Tunnel, Bridge }
+
+       
+
+        public void CarAccident()
+        {
+
+        }
+
+        private void ChangeDriving()
+        {
+
+        }
+
+
+    }
+
+    public class ControlCenter
+    {
+        
+    }
+
+    public class WeatherCenter
+    {
+        public double Wind { get; set; }
+        public double Temperature { get; set; }
+        public bool BadLightingConditions { get; set; }
+        public WeatherTypes WeatherType { get; set; }
+        public enum WeatherTypes { Sunny, Rain, Storm, Snow }
+        
+
+
+    }
 }
