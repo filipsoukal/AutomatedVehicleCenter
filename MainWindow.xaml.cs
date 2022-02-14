@@ -15,7 +15,6 @@ using System.Windows.Shapes;
 
 namespace AutomatedVehicle
 {
-
     public partial class MainWindow : Window
     {
         public MainWindow()
