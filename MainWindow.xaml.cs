@@ -17,6 +17,7 @@ namespace AutomatedVehicle
 {
     public partial class MainWindow : Window
     {
+        // iks de filipovi prdi smrdel
         public MainWindow()
         {
             InitializeComponent();
