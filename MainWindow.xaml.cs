@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace AutomatedVehicle
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// nemam te rad
     /// </summary>
     public partial class MainWindow : Window
     {
