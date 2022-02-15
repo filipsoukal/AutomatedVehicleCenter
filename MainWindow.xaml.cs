@@ -20,6 +20,7 @@ namespace AutomatedVehicle
         public MainWindow()
         {
             InitializeComponent();
+
         }
     }
 
@@ -27,25 +28,45 @@ namespace AutomatedVehicle
 
     public class Car
     {
+        public Car(double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
+        {
+            Speed = speed;
+            RoadType = roadType;
+            RouteLength = routeLength;
+            RouteProgress = routeProgress;
+            VehicleStatus = 0;
+        }
+
         public double Speed { get; set; }
         public RoadTypes RoadType { get; set; }
         public double RouteLength { get; set; }
+        public double RouteProgress { get; set; }
+        public VehicleStatusTypes VehicleStatus { get; set; }
 
         public enum RoadTypes { Normal, Tunnel, Bridge }
+        public enum VehicleStatusTypes { Operational, LightAccident, HeavyAccident}
 
-       
+        private const double deltaTime = 0.001;
+
+       public void Drive()
+        {
+            bool go = true;
+            do
+            {
+                RouteProgress = RouteProgress + Speed * deltaTime;
+                if (RouteProgress >= RouteLength) go = false;
+            } while (go);
+        }
 
         public void CarAccident()
         {
 
         }
 
-        private void ChangeDriving()
+        private void ChangeDrivingStyle()
         {
 
         }
-
-
     }
 
     public class ControlCenter
@@ -61,7 +82,10 @@ namespace AutomatedVehicle
         public WeatherTypes WeatherType { get; set; }
         public enum WeatherTypes { Sunny, Rain, Storm, Snow }
         
+        public void UpdateWeather()
+        {
 
+        }
 
     }
 }
