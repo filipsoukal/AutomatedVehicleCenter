@@ -60,7 +60,7 @@ namespace AutomatedVehicle
 
         public void CarAccident()
         {
-
+            
         }
 
         private void ChangeDrivingStyle()
@@ -71,21 +71,45 @@ namespace AutomatedVehicle
 
     public class ControlCenter
     {
+
+
         
+
+
     }
+
 
     public class WeatherCenter
     {
+
+
+        public static Weather GetWeather()
+        {
+
+            Weather weather = new Weather();
+
+            weather.Wind = 20;
+            weather.Temperature = 15;
+            weather.BadLightingConditions = false;
+            weather.WeatherType = Weather.WeatherTypes.Sunny;
+
+            return weather;
+
+        }
+    }
+
+
+
+    public class Weather : EventArgs
+    {
+ 
+
+
         public double Wind { get; set; }
         public double Temperature { get; set; }
         public bool BadLightingConditions { get; set; }
         public WeatherTypes WeatherType { get; set; }
         public enum WeatherTypes { Sunny, Rain, Storm, Snow }
         
-        public void UpdateWeather()
-        {
-
-        }
-
     }
 }
