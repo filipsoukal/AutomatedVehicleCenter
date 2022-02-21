@@ -19,19 +19,10 @@ namespace AutomatedVehicle
     {
         public MainWindow()
         {
-            InitializeComponent();
-            
-            var button = new Button() { Content = "myButton" } ; // Creating button
-            button.Click += Button_Click; //Hooking up to event
-            MainGrid.Children.Add(button); //Adding to grid or other parent
-            Grid.SetRow(button, 2);
-            GridNavigationMenu.RowDefinitions.Add(new RowDefinition());
+            InitializeComponent();        
             
         }
 
-		private void Button_Click(object sender, RoutedEventArgs e) {
-         
-		}
 	}
 
 

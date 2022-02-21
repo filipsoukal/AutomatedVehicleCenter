@@ -9,24 +9,101 @@
     <Grid x:Name="MainGrid" HorizontalAlignment="Stretch" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <ScrollViewer>
-            <Grid x:Name="GridNavigationMenu">
-                <Button Content="pes"></Button>
-            </Grid>
-        </ScrollViewer>
-        <Grid x:Name="GridInfoPanel" Grid.Column ="1">
 
-        </Grid>
-        <!--<Button>
-            <StackPanel Orientation="Horizontal">
-                <Image Source="ToolBar_FicJoints.png" />
-                <TextBlock Text="Fichiers joints" />
-            </StackPanel>
-        </Button>-->
+        <ProgressBar 
+            Name="CarProgBar" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Bottom"
+            Width="500" Height="30" 
+            Value="0" 
+            Margin="0 0 0 60">
+        </ProgressBar>
+        <ProgressBar 
+            Name="RepairProgBar" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Bottom"
+            Width="400" Height="20" 
+            Value="0" 
+            Margin="0 0 0 30">
+        </ProgressBar>
+        <Label 
+            Content="CarTemplate" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Top"
+            FontSize="30"
+            FontWeight="Bold"
+            Margin="0 0 0 100">
+        </Label>
+        <Label 
+            Content="Speed:" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center"
+            FontSize="20"
+            FontWeight="Bold"
+            Margin="196,112,523,270">
+        </Label>
+        <Label 
+            Content="Status:" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center"
+            FontSize="20"
+            FontWeight="Bold"
+            Margin="196,149,523,233">
+        </Label>
+
+        <Label 
+            Content="Road Type:" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center"
+            FontSize="20"
+            FontWeight="Bold"
+            Margin="196,186,483,196" Width="113">
+        </Label>
+        <Label 
+            Content="Lights:" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center"
+            FontSize="20"
+            FontWeight="Bold"
+            Margin="196,223,524,159">
+        </Label>
+        <Label 
+            Content="Weather:" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center"
+            FontSize="20"
+            FontWeight="Bold"
+            Margin="195,260,499,122" Width="98">
+        </Label>
+        <TextBlock
+            x:Name="SpeedTxBlk"
+            Width="50"
+            Height="35" Margin="335,114,407,270">
+        </TextBlock>
+        <TextBlock
+            x:Name="StatusTxBlk"
+            Width="50"
+            Height="35" Margin="335,154,407,230">
+        </TextBlock>
+        <TextBlock 
+            x:Name="RoadTypeTxBlk"
+            Width="50"
+            Height="35" Margin="335,188,407,196">
+        </TextBlock>
+        <TextBlock
+            x:Name="LightsTxBlk"
+            Width="50"
+            Height="35" Margin="335,225,407,159">
+        </TextBlock>
+        <TextBlock
+            x:Name="WeatherTxBlk"
+            Width="50"
+            Height="35" Margin="335,260,407,124">
+        </TextBlock>
+
     </Grid>
 </Window>
