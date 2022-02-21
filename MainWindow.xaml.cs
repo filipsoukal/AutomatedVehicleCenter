@@ -20,13 +20,26 @@ namespace AutomatedVehicle
         public MainWindow()
         {
             InitializeComponent();
-
+            
+            var button = new Button() { Content = "myButton" } ; // Creating button
+            button.Click += Button_Click; //Hooking up to event
+            MainGrid.Children.Add(button); //Adding to grid or other parent
+            Grid.SetRow(button, 2);
+            Grid.SetColumn(button, 2);
+            GridNavigationMenu.RowDefinitions.Add(new RowDefinition());
+            var uc = new UserControl();
+            GridNavigationMenu.Children.Add(uc);
+            Grid.SetRow(uc, GridNavigationMenu.RowDefinitions.Count - 1);
         }
-    }
+
+		private void Button_Click(object sender, RoutedEventArgs e) {
+         
+		}
+	}
 
 
 
-    public class Car
+	public class Car
     {
         public Car(double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
         {

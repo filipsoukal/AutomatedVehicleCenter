@@ -6,7 +6,27 @@
         xmlns:local="clr-namespace:AutomatedVehicle"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+    <Grid x:Name="MainGrid" HorizontalAlignment="Stretch" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <ScrollViewer>
+            <Grid x:Name="GridNavigationMenu">
+                <Button Content="pes"></Button>
+            </Grid>
+        </ScrollViewer>
+        <Grid x:Name="GridInfoPanel" Grid.Column ="1">
+
+        </Grid>
+        <!--<Button>
+            <StackPanel Orientation="Horizontal">
+                <Image Source="ToolBar_FicJoints.png" />
+                <TextBlock Text="Fichiers joints" />
+            </StackPanel>
+        </Button>-->
     </Grid>
 </Window>
