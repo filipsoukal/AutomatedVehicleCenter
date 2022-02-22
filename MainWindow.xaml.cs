@@ -19,14 +19,15 @@ namespace AutomatedVehicle
     {
         public MainWindow()
         {
-            InitializeComponent();
-
+            InitializeComponent();        
+            
         }
-    }
+
+	}
 
 
 
-    public class Car
+	public class Car
     {
         public Car(double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
         {
