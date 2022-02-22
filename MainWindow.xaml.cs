@@ -19,10 +19,11 @@ namespace AutomatedVehicle
     {
         public MainWindow()
         {
-            InitializeComponent();
-
+            InitializeComponent();        
+            
         }
-    }
+
+	}
 
 
 
