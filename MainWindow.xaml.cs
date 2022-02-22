@@ -26,6 +26,8 @@ namespace AutomatedVehicle
 
 
 
+
+
     public class Car
     {
         public Car(double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
@@ -38,10 +40,11 @@ namespace AutomatedVehicle
         }
 
         public double Speed { get; set; }
-        public RoadTypes RoadType { get; set; }
         public double RouteLength { get; set; }
         public double RouteProgress { get; set; }
         public VehicleStatusTypes VehicleStatus { get; set; }
+        public RoadTypes RoadType { get; set; }
+        public Weather CurrentWeather { get; set; }
 
         public enum RoadTypes { Normal, Tunnel, Bridge }
         public enum VehicleStatusTypes { Operational, LightAccident, HeavyAccident}
@@ -73,9 +76,6 @@ namespace AutomatedVehicle
     {
 
 
-        
-
-
     }
 
 
@@ -86,25 +86,21 @@ namespace AutomatedVehicle
         public static Weather GetWeather()
         {
 
-            Weather weather = new Weather();
+            Weather res = new Weather();
 
-            weather.Wind = 20;
-            weather.Temperature = 15;
-            weather.BadLightingConditions = false;
-            weather.WeatherType = Weather.WeatherTypes.Sunny;
-
-            return weather;
+            res.Wind = 20;
+            res.Temperature = 15;
+            res.BadLightingConditions = false;
+            res.WeatherType = Weather.WeatherTypes.Sunny;
+            return res;
 
         }
     }
 
 
 
-    public class Weather : EventArgs
+    public class Weather
     {
- 
-
-
         public double Wind { get; set; }
         public double Temperature { get; set; }
         public bool BadLightingConditions { get; set; }
