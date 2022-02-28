@@ -25,10 +25,6 @@ namespace AutomatedVehicle
 
 	}
 
-
-
-
-
     public class Car
     {
         public Car(double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
@@ -97,8 +93,6 @@ namespace AutomatedVehicle
 
         }
     }
-
-
 
     public class Weather
     {

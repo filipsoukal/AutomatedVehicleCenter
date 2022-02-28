@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomatedVehicle", "AutomatedVehicle.csproj", "{0DE9DE56-E4D3-4D78-A0BF-2CA17F6F186F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventAndDelegateTesting", "..\EventAndDelegateTesting\EventAndDelegateTesting.csproj", "{B8F2CE54-7517-49DE-85FC-104C55964DCE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{0DE9DE56-E4D3-4D78-A0BF-2CA17F6F186F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DE9DE56-E4D3-4D78-A0BF-2CA17F6F186F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DE9DE56-E4D3-4D78-A0BF-2CA17F6F186F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8F2CE54-7517-49DE-85FC-104C55964DCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8F2CE54-7517-49DE-85FC-104C55964DCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8F2CE54-7517-49DE-85FC-104C55964DCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8F2CE54-7517-49DE-85FC-104C55964DCE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
