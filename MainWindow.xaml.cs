@@ -72,6 +72,21 @@ namespace AutomatedVehicle
         }
 
     }
+    public class TowCar : Car{
+        
+        public TowCar(double speed, RoadTypes roadType, double routeLength, double routeProgress = 0) : base(speed,roadType,routeLength,routeProgress)
+        {
+            
+        }
+        public void FetchCar()
+        {
+
+        }
+        public void TowCarToCC()
+        {
+
+        }
+    }
 
     public delegate void CarUpdateHandler(Car car);
 
@@ -99,6 +114,10 @@ namespace AutomatedVehicle
 
         }
         private void ListItemClick()
+        {
+
+        }
+        public void ChangeIconToTowCar()
         {
 
         }
