@@ -73,6 +73,14 @@ namespace AutomatedVehicle
         
         public TowCar(double speed, RoadTypes roadType, double routeLength, double routeProgress = 0) : base(speed,roadType,routeLength,routeProgress)
         {
+            
+        }
+        public void FetchCar()
+        {
+
+        }
+        public void TowCarToCC()
+        {
 
         }
     }
