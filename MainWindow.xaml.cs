@@ -25,7 +25,7 @@ namespace AutomatedVehicle
 
 	}
 
-    public class Car
+    public class Car : EventArgs
     {
         public Car(double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
         {
@@ -43,7 +43,7 @@ namespace AutomatedVehicle
         public RoadTypes RoadType { get; set; }
         public Weather CurrentWeather { get; set; }
 
-        public enum RoadTypes { Normal, Tunnel, Bridge }
+        public enum RoadTypes { Normal, Tunnel, Bridge, Highway }
         public enum VehicleStatusTypes { Operational, LightAccident, HeavyAccident}
 
         private const double deltaTime = 0.001;
