@@ -44,11 +44,13 @@ namespace AutomatedVehicle
         public Weather CurrentWeather { get; set; }
 
         public enum RoadTypes { Normal, Tunnel, Bridge, Highway }
-        public enum VehicleStatusTypes { Operational, LightAccident, HeavyAccident}
+        public enum VehicleStatusTypes { Operational, LightAccident, HeavyAccident} // status provozu vozidla
+
+        public event CarUpdateHandler CarUpdate; // event pro control center, 
 
         private const double deltaTime = 0.001;
 
-       public void Drive()
+       public void Drive() // hlavni loop pro pohyb vozidla a aktualizace jeho stavu
         {
             bool go = true;
             do
@@ -56,6 +58,7 @@ namespace AutomatedVehicle
                 RouteProgress = RouteProgress + Speed * deltaTime;
                 if (RouteProgress >= RouteLength) go = false;
             } while (go);
+
         }
 
         public void CarAccident()
@@ -70,10 +73,20 @@ namespace AutomatedVehicle
 
     }
 
+    public delegate void CarUpdateHandler(Car car);
+
+    public delegate void WeatherUpdateHandler(Weather weather);
+
     public class ControlCenter
     {
-        public static List<Car> Cars = new List<Car>();
 
+        public static List<Car> Cars = new List<Car>();
+        
+
+        public void MonitorACar()
+        {
+            // subscribe
+        }
     }
     public class Visualization
     {
@@ -95,7 +108,8 @@ namespace AutomatedVehicle
 
     public class WeatherCenter
     {
-        public void ChangeWeather()
+        public event WeatherUpdateHandler WeatherUpdate; //event pro zmenu pocasi
+        public void ChangeWeather() // hlavni loop pro zmenu pocasi
         {
 
         }
@@ -114,7 +128,7 @@ namespace AutomatedVehicle
         }
     }
 
-    public class Weather
+    public class Weather : EventArgs // typ pocasi 
     {
         public double Wind { get; set; }
         public double Temperature { get; set; }
