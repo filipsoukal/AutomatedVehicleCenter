@@ -19,8 +19,8 @@ namespace AutomatedVehicle
     {
         public MainWindow()
         {
-            InitializeComponent();        
-            
+            InitializeComponent();
+
         }
 
 	}
@@ -72,7 +72,7 @@ namespace AutomatedVehicle
 
     public class ControlCenter
     {
-
+        public static List<Car> Cars = new List<Car>();
 
     }
     public class Visualization
@@ -85,12 +85,20 @@ namespace AutomatedVehicle
         {
 
         }
+        private void ListItemClick()
+        {
+
+        }
+
 
     }
 
     public class WeatherCenter
     {
+        public void ChangeWeather()
+        {
 
+        }
 
         public static Weather GetWeather()
         {
