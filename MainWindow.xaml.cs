@@ -67,6 +67,7 @@ namespace AutomatedVehicle
         {
 
         }
+
     }
 
     public class ControlCenter
@@ -74,7 +75,18 @@ namespace AutomatedVehicle
 
 
     }
+    public class Visualization
+    {
+        public void AddCarToList()
+        {
 
+        }
+        public void RemoveCarFromList()
+        {
+
+        }
+
+    }
 
     public class WeatherCenter
     {
