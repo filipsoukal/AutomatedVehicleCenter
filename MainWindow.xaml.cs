@@ -15,6 +15,11 @@ using System.Windows.Shapes;
 
 namespace AutomatedVehicle
 {
+
+    public delegate void CarUpdateHandler(Car car);
+
+    public delegate void WeatherUpdateHandler(Weather weather);
+
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -88,9 +93,6 @@ namespace AutomatedVehicle
         }
     }
 
-    public delegate void CarUpdateHandler(Car car);
-
-    public delegate void WeatherUpdateHandler(Weather weather);
 
     public class ControlCenter
     {
