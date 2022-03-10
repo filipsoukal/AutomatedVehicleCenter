@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace AutomatedVehicle
 {
 
-    public delegate void CarUpdateHandler();
+    public delegate void CarUpdateHandler(int id);
 
     public delegate void WeatherUpdateHandler();
 
@@ -64,16 +64,16 @@ namespace AutomatedVehicle
             {
                 RouteProgress = RouteProgress + Speed;
                 go = RouteProgress >= RouteLength ? false : true;
-                CarUpdate();
+                CheckCarAccident();
+                CarUpdate(this.ID);
                 System.Threading.Thread.Sleep(deltaTime);
             } while (go);
         }
 
-        public void CarAccident()
+        private bool CheckCarAccident()
         {
-            
+            return false;
         }
-
     }
     public class TowCar : Car{
         
@@ -94,13 +94,18 @@ namespace AutomatedVehicle
 
     public class ControlCenter
     {
-        private int id = -1;
+        public int ActiveID { get; set; }
 
         public static List<Car> Cars = new List<Car>();
-        public event CarUpdateHandler CarUpdate;
-        
-        private void ChangeCarStats()
+
+        public ControlCenter(List<Car> cars)
         {
+            Cars = cars;
+        }
+        
+        private void ChangeCarStats(int id)
+        {
+            ActiveID = id;
 
         }
 
