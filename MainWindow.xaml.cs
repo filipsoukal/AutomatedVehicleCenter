@@ -16,9 +16,9 @@ using System.Windows.Shapes;
 namespace AutomatedVehicle
 {
 
-    public delegate void CarUpdateHandler(Car car);
+    public delegate void CarUpdateHandler();
 
-    public delegate void WeatherUpdateHandler(Weather weather);
+    public delegate void WeatherUpdateHandler();
 
     public partial class MainWindow : Window
     {
@@ -32,8 +32,9 @@ namespace AutomatedVehicle
 
     public class Car : EventArgs
     {
-        public Car(double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
+        public Car(int id, double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
         {
+            ID = id;
             Speed = speed;
             RoadType = roadType;
             RouteLength = routeLength;
@@ -41,6 +42,7 @@ namespace AutomatedVehicle
             VehicleStatus = 0;
         }
 
+        public int ID { get; set; }
         public double Speed { get; set; }
         public double RouteLength { get; set; }
         public double RouteProgress { get; set; }
@@ -53,17 +55,18 @@ namespace AutomatedVehicle
 
         public event CarUpdateHandler CarUpdate; // event pro control center, 
 
-        private const double deltaTime = 0.001;
+        private const int deltaTime = 100; // Update frequency (ms)
 
        public void Drive() // hlavni loop pro pohyb vozidla a aktualizace jeho stavu
         {
             bool go = true;
             do
             {
-                RouteProgress = RouteProgress + Speed * deltaTime;
-                if (RouteProgress >= RouteLength) go = false;
+                RouteProgress = RouteProgress + Speed;
+                go = RouteProgress >= RouteLength ? false : true;
+                CarUpdate();
+                System.Threading.Thread.Sleep(deltaTime);
             } while (go);
-
         }
 
         public void CarAccident()
@@ -71,15 +74,10 @@ namespace AutomatedVehicle
             
         }
 
-        private void ChangeDrivingStyle()
-        {
-
-        }
-
     }
     public class TowCar : Car{
         
-        public TowCar(double speed, RoadTypes roadType, double routeLength, double routeProgress = 0) : base(speed,roadType,routeLength,routeProgress)
+        public TowCar(int id, double speed, RoadTypes roadType, double routeLength, double routeProgress = 0) : base(id,speed,roadType,routeLength,routeProgress)
         {
             
         }
@@ -96,13 +94,23 @@ namespace AutomatedVehicle
 
     public class ControlCenter
     {
+        private int id = -1;
 
         public static List<Car> Cars = new List<Car>();
+        public event CarUpdateHandler CarUpdate;
         
-
-        public void MonitorACar()
+        private void ChangeCarStats()
         {
-            // subscribe
+
+        }
+
+
+        public void Activate()
+        {
+            foreach (var c in Cars)
+            {
+                c.CarUpdate += ChangeCarStats;
+            }
         }
     }
     public class Visualization
