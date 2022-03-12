@@ -65,13 +65,59 @@ namespace AutomatedVehicle
                 RouteProgress = RouteProgress + Speed;
                 go = RouteProgress >= RouteLength ? false : true;
                 CheckCarAccident();
-                CarUpdate(this.ID);
+                RoadChanged();
+                if (CheckCarAccident() || RoadChanged()) CarUpdate(this.ID);
                 System.Threading.Thread.Sleep(deltaTime);
             } while (go);
         }
 
+        #region car accident
         private bool CheckCarAccident()
         {
+            int chances = 0;
+
+            switch (this.RoadType)
+            {
+                case RoadTypes.Normal:
+                    chances = 50;
+                    chances -= WeatherCalc(false);
+                    break;
+                case RoadTypes.Tunnel:
+                    chances = 50;
+                    break;
+                case RoadTypes.Highway:
+                    chances = 45;
+                    chances -= WeatherCalc(false);
+                    break;
+                case RoadTypes.Bridge:
+                    chances = 45;
+                    chances -= WeatherCalc(true);
+                    break;
+            }
+
+
+
+
+            return false;
+        }
+
+        private int WeatherCalc(bool heavyImpact)
+        {
+            int res = 0;
+            int amp = heavyImpact ? 2 : 1;
+            
+            res -=
+                this.CurrentWeather.WeatherType == Weather.WeatherTypes.Rain ? 5 * amp :
+                this.CurrentWeather.WeatherType == Weather.WeatherTypes.Storm ? 8 * amp :
+                this.CurrentWeather.WeatherType == Weather.WeatherTypes.Snow ? 10 * amp : 0;
+            return res;
+        }
+        #endregion
+
+
+        private bool RoadChanged()
+        {
+            
             return false;
         }
     }
@@ -105,7 +151,9 @@ namespace AutomatedVehicle
         
         private void ChangeCarStats(int id)
         {
+            Random rng = new Random();
             ActiveID = id;
+
 
         }
 
