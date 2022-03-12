@@ -44,9 +44,10 @@ namespace AutomatedVehicle
         }
 
         public int ID { get; set; }
-        public double Speed { get; set; }
-        public double RouteLength { get; set; }
-        public double RouteProgress { get; set; }
+        public double Speed { get; set; } // km/h
+        public double RouteLength { get; set; } // km
+        public double RouteProgress { get; set; } // km
+        public bool LightsOn { get; set; }
         public VehicleStatusTypes VehicleStatus { get; set; }
         public RoadTypes RoadType { get; set; }
         public Weather CurrentWeather { get; set; }
@@ -57,7 +58,7 @@ namespace AutomatedVehicle
         public event CarUpdateHandler CarAccident; // eventy pro control center, 
         public event CarUpdateHandler RoadChange;
         
-        private const int deltaTime = 100; // Update frequency (ms)
+        private const int deltaTime = 1000; // Update frequency (ms)
         private int roadChangeChances = 0;
 
         public void Drive() // hlavni loop pro pohyb vozidla a aktualizace jeho stavu
@@ -65,7 +66,7 @@ namespace AutomatedVehicle
             bool go = true;
             do
             {
-                RouteProgress = RouteProgress + Speed;
+                RouteProgress = RouteProgress + (Speed / 3.6); // vyřešit převod z km na m
                 go = RouteProgress >= RouteLength ? false : true;
                 if (CheckCarAccident()) CarAccident(this.ID);
                 if (RoadChanged()) RoadChange(this.ID);
@@ -166,6 +167,25 @@ namespace AutomatedVehicle
         private void ChangeCarStats(int id)
         {
             ActiveID = id;
+            Car activeCar = Cars[ActiveID];
+
+            switch (activeCar.RoadType)
+            {
+                case Car.RoadTypes.Normal:
+                    activeCar.Speed = 50;
+                    break;
+                case Car.RoadTypes.Tunnel:
+                    activeCar.Speed = 110;
+                    break;
+                case Car.RoadTypes.Bridge:
+                    activeCar.Speed = 130;
+                    break;
+                case Car.RoadTypes.Highway:
+                    activeCar.Speed = 130;
+                    break;
+            }
+
+            activeCar.LightsOn = activeCar.CurrentWeather.BadLightingConditions ? true : false;
         }
 
         private void ResolveAccident(int id)
