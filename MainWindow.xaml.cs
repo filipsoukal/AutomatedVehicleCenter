@@ -32,6 +32,7 @@ namespace AutomatedVehicle
 
     public class Car : EventArgs
     {
+        Random rng = new Random();
         public Car(int id, double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
         {
             ID = id;
@@ -53,20 +54,22 @@ namespace AutomatedVehicle
         public enum RoadTypes { Normal, Tunnel, Bridge, Highway }
         public enum VehicleStatusTypes { Operational, LightAccident, HeavyAccident} // status provozu vozidla
 
-        public event CarUpdateHandler CarUpdate; // event pro control center, 
-
+        public event CarUpdateHandler CarAccident; // eventy pro control center, 
+        public event CarUpdateHandler RoadChange;
+        
         private const int deltaTime = 100; // Update frequency (ms)
+        private int roadChangeChances = 0;
 
-       public void Drive() // hlavni loop pro pohyb vozidla a aktualizace jeho stavu
+        public void Drive() // hlavni loop pro pohyb vozidla a aktualizace jeho stavu
         {
             bool go = true;
             do
             {
                 RouteProgress = RouteProgress + Speed;
                 go = RouteProgress >= RouteLength ? false : true;
-                CheckCarAccident();
-                RoadChanged();
-                if (CheckCarAccident() || RoadChanged()) CarUpdate(this.ID);
+                if (CheckCarAccident()) CarAccident(this.ID);
+                if (RoadChanged()) RoadChange(this.ID);
+                
                 System.Threading.Thread.Sleep(deltaTime);
             } while (go);
         }
@@ -75,30 +78,31 @@ namespace AutomatedVehicle
         private bool CheckCarAccident()
         {
             int chances = 0;
+            bool res = false;
 
             switch (this.RoadType)
             {
                 case RoadTypes.Normal:
-                    chances = 50;
+                    chances = 5000;
                     chances -= WeatherCalc(false);
                     break;
                 case RoadTypes.Tunnel:
-                    chances = 50;
+                    chances = 5000;
                     break;
                 case RoadTypes.Highway:
-                    chances = 45;
+                    chances = 4500;
                     chances -= WeatherCalc(false);
                     break;
                 case RoadTypes.Bridge:
-                    chances = 45;
+                    chances = 4500;
                     chances -= WeatherCalc(true);
                     break;
             }
 
+            int temp = chances * 100;
 
-
-
-            return false;
+            res = rng.Next(0 , temp) % chances == 0 ? true : false;
+            return res;
         }
 
         private int WeatherCalc(bool heavyImpact)
@@ -114,11 +118,20 @@ namespace AutomatedVehicle
         }
         #endregion
 
-
         private bool RoadChanged()
         {
-            
-            return false;
+
+            const int roof = 100;
+            bool res = false;
+            RoadTypes tempRoad = this.RoadType;
+
+            int temp = rng.Next(0, roof);
+            this.RoadType = temp <= roadChangeChances ? (RoadTypes)rng.Next(0, 4) : tempRoad;
+
+            res = this.RoadType == tempRoad ? false : true;
+            roadChangeChances += res == false ? 1 : 0;
+            return res;
+
         }
     }
     public class TowCar : Car{
@@ -140,6 +153,7 @@ namespace AutomatedVehicle
 
     public class ControlCenter
     {
+        Random rng = new Random();
         public int ActiveID { get; set; }
 
         public static List<Car> Cars = new List<Car>();
@@ -151,10 +165,12 @@ namespace AutomatedVehicle
         
         private void ChangeCarStats(int id)
         {
-            Random rng = new Random();
             ActiveID = id;
+        }
 
-
+        private void ResolveAccident(int id)
+        {
+            ActiveID = id;
         }
 
 
@@ -162,7 +178,8 @@ namespace AutomatedVehicle
         {
             foreach (var c in Cars)
             {
-                c.CarUpdate += ChangeCarStats;
+                c.RoadChange += ChangeCarStats;
+                c.CarAccident += ResolveAccident;
             }
         }
     }
