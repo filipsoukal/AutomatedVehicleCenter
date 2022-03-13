@@ -59,18 +59,27 @@ namespace AutomatedVehicle
         public Car(int id, double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
         {
             ID = id;
-            Speed = speed;
+            tempSpeed = speed;
             RoadType = roadType;
-            RouteLength = routeLength;
+            tempLength = routeLength;
             RouteProgress = routeProgress;
             VehicleStatus = 0;
         }
 
         public int ID { get; set; }
-        public double Speed { get; set; } // km/h
-        public double RouteLength { get; set; } // km
-        public double RouteProgress { get; set; } // km
+        public double Speed // m/s
+        {
+            get { return this.Speed; }
+            set { this.Speed = tempSpeed / 3.6; }
+        }
+        public double RouteLength // m
+        {
+            get { return this.RouteLength; }
+            set { this.RouteLength = tempLength * 1000; }
+        } 
+        public double RouteProgress { get; set; } // m
         public bool LightsOn { get; set; }
+
         public VehicleStatusTypes VehicleStatus { get; set; }
         public RoadTypes RoadType { get; set; }
         public Weather CurrentWeather { get; set; }
@@ -84,12 +93,15 @@ namespace AutomatedVehicle
         private const int tick = 1000; // Update frequency (ms)
         private int roadChangeChances = 0;
 
+        private double tempSpeed = 0, tempLength = 0;
+
         public void Drive() // hlavni loop pro pohyb vozidla a aktualizace jeho stavu
         {
             bool go = true;
             do
             {
-                RouteProgress = RouteProgress + (Speed / 3.6); // vyřešit převod z km na m
+          
+                RouteProgress = RouteProgress + Speed; // vyřešit převod z km na m
                 go = RouteProgress >= RouteLength ? false : true;
                 if (CheckCarAccident()) CarAccident(this.ID);
                 if (RoadChanged()) RoadChange(this.ID);
@@ -188,10 +200,8 @@ namespace AutomatedVehicle
 
         public static List<Car> Cars = new List<Car>();
 
-        public ControlCenter(List<Car> cars)
-        {
-            Cars = cars;
-        }
+        public ControlCenter(List<Car> cars) => Cars = cars;
+
 		private void ChangeCarStats(int id)
         {
             ActiveID = id;
@@ -213,12 +223,29 @@ namespace AutomatedVehicle
                     break;
             }
 
-            activeCar.LightsOn = activeCar.CurrentWeather.BadLightingConditions ? true : false;
+            activeCar.LightsOn =
+                activeCar.CurrentWeather.BadLightingConditions ? true :
+                activeCar.RoadType == Car.RoadTypes.Tunnel ? true : false; 
+        }
+
+        public static List<Car> GetCars(int numOfCars)
+        {
+            Random rng = new Random();
+            List<Car> retCars = new List<Car>();
+            for (int i = 0; i < numOfCars; i++)
+            {
+                Car newCar = new Car(i, 50, Car.RoadTypes.Normal, rng.Next(10, 151));
+            }
+
+            return retCars;
         }
 
         private void ResolveAccident(int id)
         {
             ActiveID = id;
+            int chances = 5;
+            Cars[ActiveID].VehicleStatus = rng.Next(0, chances) == 1 ? Car.VehicleStatusTypes.HeavyAccident : Car.VehicleStatusTypes.LightAccident;
+
         }
 
 
@@ -237,6 +264,8 @@ namespace AutomatedVehicle
     {
         Random rng = new Random();
         public event WeatherUpdateHandler WeatherUpdate; //event pro zmenu pocasi
+
+        public WeatherCenter() => ChangeWeather();
         
         public void ChangeWeather() // hlavni loop pro zmenu pocasi
         {
@@ -282,10 +311,7 @@ namespace AutomatedVehicle
     {
         public static List<Car> CarList { get; set; } = ControlCenter.Cars;
 
-        public Cars()
-        {
-            Subscribe();
-        }
+        public Cars() => Subscribe();
 
         private void UpdateList(int id) => CarList = ControlCenter.Cars;
 
