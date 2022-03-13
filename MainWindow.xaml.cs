@@ -22,6 +22,9 @@ namespace AutomatedVehicle
 
     public delegate void WeatherUpdateHandler(Weather newWeather);
 
+    public delegate void TowCarHandler(int id);
+
+    public delegate void VisualsHandler();
 
     public partial class MainWindow : Window
     {
@@ -29,6 +32,7 @@ namespace AutomatedVehicle
         {
             InitializeComponent();
             ChangeUItoCar();
+            InitSystems();
         }
         private Car selectedCar;
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -44,7 +48,7 @@ namespace AutomatedVehicle
             }
 			
         }
-        private void ChangeUItoCar() {
+        public void ChangeUItoCar() {
             int Carindex = 0;
             if(selectedCar != null) {
                 Carindex = selectedCar.ID - 1;
@@ -66,9 +70,17 @@ namespace AutomatedVehicle
             
         }
 
-		private void Button_Click(object sender, RoutedEventArgs e) {
-            Cars.CarList[0].Speed = 36;
-		}
+
+        private void InitSystems() // inicializace class
+        {
+            ControlCenter controlCenter = new ControlCenter(ControlCenter.GetCars(15));
+            WeatherCenter weatherCenter = new WeatherCenter();
+            foreach (var c in ControlCenter.Cars)
+            {
+                c.Subscribe(weatherCenter);
+                c.UpdateVisuals += ChangeUItoCar;
+            }
+        }
 	}
 
 	public class Car : EventArgs
@@ -82,6 +94,7 @@ namespace AutomatedVehicle
             tempLength = routeLength;
             RouteProgress = routeProgress;
             VehicleStatus = 0;
+            Drive();
         }
 
         public int ID { get; set; }
@@ -93,7 +106,8 @@ namespace AutomatedVehicle
         public double RouteLength // m
         {
             get { return tempLength; }
-            set { this.RouteLength = tempLength * 1000; }
+            
+            set { tempLength = value * 1000; }
         } 
         public double RouteProgress { get; set; } // m
         public bool LightsOn { get; set; }
@@ -107,6 +121,7 @@ namespace AutomatedVehicle
 
         public event CarUpdateHandler CarAccident; // eventy pro control center, 
         public event CarUpdateHandler RoadChange;
+        public event VisualsHandler UpdateVisuals;
         
         private const int tick = 1000; // Update frequency (ms)
         private int roadChangeChances = 0;
@@ -118,12 +133,11 @@ namespace AutomatedVehicle
             bool go = true;
             do
             {
-          
                 RouteProgress = RouteProgress + Speed; // vyřešit převod z km na m
                 go = RouteProgress >= RouteLength ? false : true;
                 if (CheckCarAccident()) CarAccident(this.ID);
                 if (RoadChanged()) RoadChange(this.ID);
-                
+                UpdateVisuals();
                 System.Threading.Thread.Sleep(tick);
             } while (go);
         }
@@ -200,25 +214,24 @@ namespace AutomatedVehicle
         {
             
         }
-        public void FetchCar()
-        {
-
-        }
-        public void TowCarToCC()
-        {
-
-        }
     }
 
 
     public class ControlCenter
     {
         Random rng = new Random();
+
+        public static event TowCarHandler NewTowCar;
         public int ActiveID { get; set; }
 
         public static List<Car> Cars = new List<Car>();
 
-        public ControlCenter(List<Car> cars) => Cars = cars;
+
+        public ControlCenter(List<Car> cars)
+        {
+            Cars = cars;
+            this.Subscribe();
+        }
 
 		private void ChangeCarStats(int id)
         {
@@ -253,6 +266,7 @@ namespace AutomatedVehicle
             for (int i = 0; i < numOfCars; i++)
             {
                 Car newCar = new Car(i, 50, Car.RoadTypes.Normal, rng.Next(10, 151));
+                retCars.Add(newCar);
             }
 
             return retCars;
@@ -261,8 +275,15 @@ namespace AutomatedVehicle
         private void ResolveAccident(int id)
         {
             ActiveID = id;
+            Car activeCar = Cars[ActiveID];
             int chances = 5;
-            Cars[ActiveID].VehicleStatus = rng.Next(0, chances) == 1 ? Car.VehicleStatusTypes.HeavyAccident : Car.VehicleStatusTypes.LightAccident;
+
+            activeCar.VehicleStatus = rng.Next(0, chances) == 1 ? Car.VehicleStatusTypes.HeavyAccident : Car.VehicleStatusTypes.LightAccident;
+            if (activeCar.VehicleStatus == Car.VehicleStatusTypes.HeavyAccident)
+            {
+                NewTowCar(ActiveID);
+                TowCar tc = new TowCar(Cars.Count, 50, Car.RoadTypes.Normal, activeCar.RouteProgress / 1000);
+            }
 
         }
 
@@ -340,6 +361,7 @@ namespace AutomatedVehicle
                 c.RoadChange += UpdateList;
                 c.CarAccident += UpdateList;
             }
+            ControlCenter.NewTowCar += UpdateList;
         }
 		//public static List<Car> GetCars() {
 		//	var list = new List<Car>();
