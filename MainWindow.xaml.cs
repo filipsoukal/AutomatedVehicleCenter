@@ -30,9 +30,9 @@ namespace AutomatedVehicle
     {
         public MainWindow()
         {
+            InitSystems();
             InitializeComponent();
             ChangeUItoCar();
-            InitSystems();
         }
         private Car selectedCar;
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -67,6 +67,7 @@ namespace AutomatedVehicle
                 Lightbinding.Source = Cars.CarList[Carindex].LightsOn;
                 LightsTxBlk.SetBinding(TextBlock.TextProperty, Lightbinding);
                 //WeatherTxBlk.Text = Cars.CarList[Carindex].CurrentWeather.WeatherType.ToString();
+                
             
         }
 
@@ -86,7 +87,7 @@ namespace AutomatedVehicle
 	public class Car : EventArgs
     {
         Random rng = new Random();
-        public Car(int id, double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
+        public Car(int id, double speed, RoadTypes roadType, double routeLength, Weather weather, double routeProgress = 0)
         {
             ID = id;
             tempSpeed = speed;
@@ -94,6 +95,7 @@ namespace AutomatedVehicle
             tempLength = routeLength;
             RouteProgress = routeProgress;
             VehicleStatus = 0;
+            CurrentWeather = weather;
             Drive();
         }
 
@@ -137,7 +139,7 @@ namespace AutomatedVehicle
                 go = RouteProgress >= RouteLength ? false : true;
                 if (CheckCarAccident()) CarAccident(this.ID);
                 if (RoadChanged()) RoadChange(this.ID);
-                UpdateVisuals();
+                //UpdateVisuals();
                 System.Threading.Thread.Sleep(tick);
             } while (go);
         }
@@ -210,7 +212,7 @@ namespace AutomatedVehicle
 	}
     public class TowCar : Car{
         
-        public TowCar(int id, double speed, RoadTypes roadType, double routeLength, double routeProgress = 0) : base(id,speed,roadType,routeLength,routeProgress)
+        public TowCar(int id, double speed, RoadTypes roadType, double routeLength, Weather weather, double routeProgress = 0) : base(id,speed,roadType,routeLength, weather ,routeProgress)
         {
             
         }
@@ -265,7 +267,7 @@ namespace AutomatedVehicle
             List<Car> retCars = new List<Car>();
             for (int i = 0; i < numOfCars; i++)
             {
-                Car newCar = new Car(i, 50, Car.RoadTypes.Normal, rng.Next(10, 151));
+                Car newCar = new Car(i, 50, Car.RoadTypes.Normal, rng.Next(10, 151), WeatherCenter.currentWeather);
                 retCars.Add(newCar);
             }
 
@@ -282,7 +284,7 @@ namespace AutomatedVehicle
             if (activeCar.VehicleStatus == Car.VehicleStatusTypes.HeavyAccident)
             {
                 NewTowCar(ActiveID);
-                TowCar tc = new TowCar(Cars.Count, 50, Car.RoadTypes.Normal, activeCar.RouteProgress / 1000);
+                TowCar tc = new TowCar(Cars.Count, 50, Car.RoadTypes.Normal, activeCar.RouteProgress / 1000, WeatherCenter.currentWeather);
             }
 
         }
@@ -303,6 +305,7 @@ namespace AutomatedVehicle
     {
         Random rng = new Random();
         public event WeatherUpdateHandler WeatherUpdate; //event pro zmenu pocasi
+        public static Weather currentWeather = new Weather();
 
         public WeatherCenter() => ChangeWeather();
         
@@ -313,8 +316,8 @@ namespace AutomatedVehicle
             {
                 if (rng.Next(0,chance) == 1)
                 {
-                    Weather w = GetWeather();
-                    WeatherUpdate(w);
+                    currentWeather = GetWeather();
+                    WeatherUpdate(currentWeather);
                 }
                 System.Threading.Thread.Sleep(tick);
             }
@@ -348,9 +351,13 @@ namespace AutomatedVehicle
 
     public class Cars
     {
-        public static List<Car> CarList { get; set; } = ControlCenter.Cars;
+        public static List<Car> CarList;
 
-        public Cars() => Subscribe();
+        public Cars()
+        {
+            CarList = ControlCenter.Cars;
+            Subscribe();
+        }
 
         private void UpdateList(int id) => CarList = ControlCenter.Cars;
 
