@@ -19,7 +19,7 @@ namespace AutomatedVehicle
 
     public delegate void CarUpdateHandler(int id);
 
-    public delegate void WeatherUpdateHandler();
+    public delegate void WeatherUpdateHandler(Weather newWeather);
 
     public partial class MainWindow : Window
     {
@@ -36,7 +36,6 @@ namespace AutomatedVehicle
                 selectedCar = Cars.CarList[(sender as ListView).SelectedIndex];
                 ChangeUItoCar();
             }
-            Visualization Viz = new Visualization();
             
         }
         private void ChangeUItoCar() {
@@ -49,7 +48,7 @@ namespace AutomatedVehicle
             StatusTxBlk.Text = Cars.CarList[Carindex].VehicleStatus.ToString();
             RoadTypeTxBlk.Text = Cars.CarList[Carindex].RoadType.ToString();
             LightsTxBlk.Text = Cars.CarList[Carindex].LightsOn.ToString();
-            //WeatherTxBlk.Text = Cars.CarList[Carindex].CurrentWeather.ToString();
+            WeatherTxBlk.Text = Cars.CarList[Carindex].CurrentWeather.WeatherType.ToString();
 
         }
 	}
@@ -82,7 +81,7 @@ namespace AutomatedVehicle
         public event CarUpdateHandler CarAccident; // eventy pro control center, 
         public event CarUpdateHandler RoadChange;
         
-        private const int deltaTime = 1000; // Update frequency (ms)
+        private const int tick = 1000; // Update frequency (ms)
         private int roadChangeChances = 0;
 
         public void Drive() // hlavni loop pro pohyb vozidla a aktualizace jeho stavu
@@ -95,7 +94,7 @@ namespace AutomatedVehicle
                 if (CheckCarAccident()) CarAccident(this.ID);
                 if (RoadChanged()) RoadChange(this.ID);
                 
-                System.Threading.Thread.Sleep(deltaTime);
+                System.Threading.Thread.Sleep(tick);
             } while (go);
         }
 
@@ -144,7 +143,6 @@ namespace AutomatedVehicle
         #endregion
         private bool RoadChanged()
         {
-
             const int roof = 100;
             bool res = false;
             RoadTypes tempRoad = this.RoadType;
@@ -153,10 +151,15 @@ namespace AutomatedVehicle
             this.RoadType = temp <= roadChangeChances ? (RoadTypes)rng.Next(0, 4) : tempRoad;
 
             res = this.RoadType == tempRoad ? false : true;
-            roadChangeChances += res == false ? 1 : 0;
-            return res;
+            if (res == true) roadChangeChances = 0;
+            else roadChangeChances++;
 
+            return res;
         }
+
+        private void SetWeather(Weather w) => this.CurrentWeather = w;    
+        public void Subscribe(WeatherCenter wc) => wc.WeatherUpdate += SetWeather;
+
 		public override string ToString() {
 			return ID.ToString();
 		}
@@ -189,12 +192,6 @@ namespace AutomatedVehicle
         {
             Cars = cars;
         }
-		//private void CreateCars() {
-
-		//	foreach(Car item in CarList) {
-		//		testbox.Text += item.RouteLength + "\n";
-		//	}
-		//}
 		private void ChangeCarStats(int id)
         {
             ActiveID = id;
@@ -225,7 +222,7 @@ namespace AutomatedVehicle
         }
 
 
-        public void Activate()
+        public void Subscribe()
         {
             foreach (var c in Cars)
             {
@@ -235,37 +232,39 @@ namespace AutomatedVehicle
         }
         
     }
-    public class Visualization
-    {
-        public void AddCarToList()
-        {
-
-        }
-        public void RemoveCarFromList()
-        {
-
-        }
-    }
-
+    #region weather
     public class WeatherCenter
     {
+        Random rng = new Random();
         public event WeatherUpdateHandler WeatherUpdate; //event pro zmenu pocasi
+        
         public void ChangeWeather() // hlavni loop pro zmenu pocasi
         {
-
+            const int chance = 150, tick = 1000;
+            while (true)
+            {
+                if (rng.Next(0,chance) == 1)
+                {
+                    Weather w = GetWeather();
+                    WeatherUpdate(w);
+                }
+                System.Threading.Thread.Sleep(tick);
+            }
         }
 
-        public static Weather GetWeather()
+        public Weather GetWeather() // generace noveho pocasi
         {
-
+            Random rng = new Random();
             Weather res = new Weather();
 
-            res.Wind = 20;
-            res.Temperature = 15;
-            res.BadLightingConditions = false;
-            res.WeatherType = Weather.WeatherTypes.Sunny;
+            res.Wind = rng.Next(5, 40);
+            res.WeatherType = (Weather.WeatherTypes)rng.Next(0, 3);
+            res.Temperature =
+                res.WeatherType == Weather.WeatherTypes.Sunny ? rng.Next(15, 41)
+                : res.WeatherType == Weather.WeatherTypes.Snow ? rng.Next(-15, 3)
+                : rng.Next(8, 21);
+            res.BadLightingConditions = res.WeatherType != Weather.WeatherTypes.Sunny ? false : true;
             return res;
-
         }
     }
 
@@ -275,20 +274,37 @@ namespace AutomatedVehicle
         public double Temperature { get; set; }
         public bool BadLightingConditions { get; set; }
         public WeatherTypes WeatherType { get; set; }
-        public enum WeatherTypes { Sunny, Rain, Storm, Snow }
-        
+        public enum WeatherTypes { Sunny, Rain, Storm, Snow }   
     }
+    #endregion
+
     public class Cars
     {
-        public static List<Car> CarList { get; set; } = GetCars();
-        public static List<Car> GetCars()
+        public static List<Car> CarList { get; set; } = ControlCenter.Cars;
+
+        public Cars()
         {
-            var list = new List<Car>();
-             Random rnd = new Random();
-			for(int i = 1;i <= 30;i++) {
-                list.Add(new Car(i,rnd.Next(50,201),0,rnd.Next(50,201)));
-			}
-            return list;
+            Subscribe();
         }
+
+        private void UpdateList(int id) => CarList = ControlCenter.Cars;
+
+        public void Subscribe()
+        {
+            foreach (var c in CarList)
+            {
+                c.RoadChange += UpdateList;
+                c.CarAccident += UpdateList;
+            }
+        }
+   //     public static List<Car> GetCars()
+   //     {
+   //         var list = new List<Car>();
+   //          Random rnd = new Random();
+			//for(int i = 1;i <= 30;i++) {
+   //             list.Add(new Car(i,rnd.Next(50,201),0,rnd.Next(50,201)));
+			//}
+   //         return list;
+   //     }
     }
 }
