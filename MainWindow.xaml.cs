@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 
 namespace AutomatedVehicle
 {
@@ -25,9 +26,17 @@ namespace AutomatedVehicle
         public MainWindow()
         {
             InitializeComponent();
-
+            
+            
         }
-
+        private Car _selected;
+        private void listView_Click(object sender, RoutedEventArgs e) {
+            var item = (sender as ListView).SelectedItem;
+            if (item != null) {
+                _selected = Cars.CarList[(sender as ListView).SelectedIndex];
+                MessageBox.Show(_selected.ToString(),"xd");
+            }
+        }
 	}
 
     public class Car : EventArgs
@@ -118,7 +127,6 @@ namespace AutomatedVehicle
             return res;
         }
         #endregion
-
         private bool RoadChanged()
         {
 
@@ -134,7 +142,10 @@ namespace AutomatedVehicle
             return res;
 
         }
-    }
+		public override string ToString() {
+			return ID.ToString();
+		}
+	}
     public class TowCar : Car{
         
         public TowCar(int id, double speed, RoadTypes roadType, double routeLength, double routeProgress = 0) : base(id,speed,roadType,routeLength,routeProgress)
@@ -163,8 +174,13 @@ namespace AutomatedVehicle
         {
             Cars = cars;
         }
-        
-        private void ChangeCarStats(int id)
+		//private void CreateCars() {
+
+		//	foreach(Car item in CarList) {
+		//		testbox.Text += item.RouteLength + "\n";
+		//	}
+		//}
+		private void ChangeCarStats(int id)
         {
             ActiveID = id;
             Car activeCar = Cars[ActiveID];
@@ -202,6 +218,7 @@ namespace AutomatedVehicle
                 c.CarAccident += ResolveAccident;
             }
         }
+        
     }
     public class Visualization
     {
@@ -255,5 +272,18 @@ namespace AutomatedVehicle
         public WeatherTypes WeatherType { get; set; }
         public enum WeatherTypes { Sunny, Rain, Storm, Snow }
         
+    }
+    public class Cars
+    {
+        public static List<Car> CarList { get; set; } = GetCars();
+        public static List<Car> GetCars()
+        {
+            var list = new List<Car>();
+             Random rnd = new Random();
+			for(int i = 1;i <= 30;i++) {
+                list.Add(new Car(i,30,0,rnd.Next(50,201)));
+			}
+            return list;
+        }
     }
 }
