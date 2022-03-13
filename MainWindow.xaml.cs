@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 
 namespace AutomatedVehicle
 {
@@ -25,9 +26,32 @@ namespace AutomatedVehicle
         public MainWindow()
         {
             InitializeComponent();
+            ChangeUItoCar();
+            
+        }
+        private Car selectedCar;
+        private void listView_Click(object sender, RoutedEventArgs e) {
+            var item = (sender as ListView).SelectedItem;
+            if (item != null) {
+                selectedCar = Cars.CarList[(sender as ListView).SelectedIndex];
+                ChangeUItoCar();
+            }
+            Visualization Viz = new Visualization();
+            
+        }
+        private void ChangeUItoCar() {
+            int Carindex = 0;
+            if(selectedCar != null) {
+                Carindex = selectedCar.ID - 1;
+            }
+            CarNamelbl.Content = "Car " + (Carindex+1);
+            SpeedTxBlk.Text = Cars.CarList[Carindex].Speed.ToString();
+            StatusTxBlk.Text = Cars.CarList[Carindex].VehicleStatus.ToString();
+            RoadTypeTxBlk.Text = Cars.CarList[Carindex].RoadType.ToString();
+            LightsTxBlk.Text = Cars.CarList[Carindex].LightsOn.ToString();
+            //WeatherTxBlk.Text = Cars.CarList[Carindex].CurrentWeather.ToString();
 
         }
-
 	}
 
     public class Car : EventArgs
@@ -118,7 +142,6 @@ namespace AutomatedVehicle
             return res;
         }
         #endregion
-
         private bool RoadChanged()
         {
 
@@ -134,7 +157,10 @@ namespace AutomatedVehicle
             return res;
 
         }
-    }
+		public override string ToString() {
+			return ID.ToString();
+		}
+	}
     public class TowCar : Car{
         
         public TowCar(int id, double speed, RoadTypes roadType, double routeLength, double routeProgress = 0) : base(id,speed,roadType,routeLength,routeProgress)
@@ -163,8 +189,13 @@ namespace AutomatedVehicle
         {
             Cars = cars;
         }
-        
-        private void ChangeCarStats(int id)
+		//private void CreateCars() {
+
+		//	foreach(Car item in CarList) {
+		//		testbox.Text += item.RouteLength + "\n";
+		//	}
+		//}
+		private void ChangeCarStats(int id)
         {
             ActiveID = id;
             Car activeCar = Cars[ActiveID];
@@ -202,6 +233,7 @@ namespace AutomatedVehicle
                 c.CarAccident += ResolveAccident;
             }
         }
+        
     }
     public class Visualization
     {
@@ -213,16 +245,6 @@ namespace AutomatedVehicle
         {
 
         }
-        private void ListItemClick()
-        {
-
-        }
-        public void ChangeIconToTowCar()
-        {
-
-        }
-
-
     }
 
     public class WeatherCenter
@@ -255,5 +277,18 @@ namespace AutomatedVehicle
         public WeatherTypes WeatherType { get; set; }
         public enum WeatherTypes { Sunny, Rain, Storm, Snow }
         
+    }
+    public class Cars
+    {
+        public static List<Car> CarList { get; set; } = GetCars();
+        public static List<Car> GetCars()
+        {
+            var list = new List<Car>();
+             Random rnd = new Random();
+			for(int i = 1;i <= 30;i++) {
+                list.Add(new Car(i,rnd.Next(50,201),0,rnd.Next(50,201)));
+			}
+            return list;
+        }
     }
 }
