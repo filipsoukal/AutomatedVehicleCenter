@@ -26,16 +26,31 @@ namespace AutomatedVehicle
         public MainWindow()
         {
             InitializeComponent();
-            
+            ChangeUItoCar();
             
         }
-        private Car _selected;
+        private Car selectedCar;
         private void listView_Click(object sender, RoutedEventArgs e) {
             var item = (sender as ListView).SelectedItem;
             if (item != null) {
-                _selected = Cars.CarList[(sender as ListView).SelectedIndex];
-                MessageBox.Show(_selected.ToString(),"xd");
+                selectedCar = Cars.CarList[(sender as ListView).SelectedIndex];
+                ChangeUItoCar();
             }
+            Visualization Viz = new Visualization();
+            
+        }
+        private void ChangeUItoCar() {
+            int Carindex = 0;
+            if(selectedCar != null) {
+                Carindex = selectedCar.ID - 1;
+            }
+            CarNamelbl.Content = "Car " + (Carindex+1);
+            SpeedTxBlk.Text = Cars.CarList[Carindex].Speed.ToString();
+            StatusTxBlk.Text = Cars.CarList[Carindex].VehicleStatus.ToString();
+            RoadTypeTxBlk.Text = Cars.CarList[Carindex].RoadType.ToString();
+            LightsTxBlk.Text = Cars.CarList[Carindex].LightsOn.ToString();
+            //WeatherTxBlk.Text = Cars.CarList[Carindex].CurrentWeather.ToString();
+
         }
 	}
 
@@ -230,16 +245,6 @@ namespace AutomatedVehicle
         {
 
         }
-        private void ListItemClick()
-        {
-
-        }
-        public void ChangeIconToTowCar()
-        {
-
-        }
-
-
     }
 
     public class WeatherCenter
@@ -281,7 +286,7 @@ namespace AutomatedVehicle
             var list = new List<Car>();
              Random rnd = new Random();
 			for(int i = 1;i <= 30;i++) {
-                list.Add(new Car(i,30,0,rnd.Next(50,201)));
+                list.Add(new Car(i,rnd.Next(50,201),0,rnd.Next(50,201)));
 			}
             return list;
         }

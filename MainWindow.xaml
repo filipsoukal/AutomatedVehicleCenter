@@ -52,6 +52,7 @@
             Margin="0 0 0 30">
         </ProgressBar>
         <Label 
+            x:Name="CarNamelbl"
             Content="CarTemplate" 
             HorizontalAlignment="Center" 
             VerticalAlignment="Top"
@@ -93,7 +94,7 @@
             FontSize="20"
             Grid.Column="1"
             FontWeight="Bold"
-            Margin="93,220,400,164" Height="35" Width="73" RenderTransformOrigin="-0.608,1.149">
+            Margin="93,220,400,157" Height="42" Width="73" RenderTransformOrigin="-0.608,1.149">
         </Label>
         <Label 
             Content="Weather:" 
