@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Timers;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -21,39 +22,56 @@ namespace AutomatedVehicle
 
     public delegate void WeatherUpdateHandler(Weather newWeather);
 
+
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
             ChangeUItoCar();
-            
         }
         private Car selectedCar;
+        private static void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            ((MainWindow)System.Windows.Application.Current.MainWindow).UpdateLayout();
+        }
         private void listView_Click(object sender, RoutedEventArgs e) {
+            Random random = new Random();
             var item = (sender as ListView).SelectedItem;
             if (item != null) {
                 selectedCar = Cars.CarList[(sender as ListView).SelectedIndex];
                 ChangeUItoCar();
             }
-            
+			
         }
         private void ChangeUItoCar() {
             int Carindex = 0;
             if(selectedCar != null) {
                 Carindex = selectedCar.ID - 1;
             }
-            CarNamelbl.Content = "Car " + (Carindex+1);
-            SpeedTxBlk.Text = Cars.CarList[Carindex].Speed.ToString();
-            StatusTxBlk.Text = Cars.CarList[Carindex].VehicleStatus.ToString();
-            RoadTypeTxBlk.Text = Cars.CarList[Carindex].RoadType.ToString();
-            LightsTxBlk.Text = Cars.CarList[Carindex].LightsOn.ToString();
-            WeatherTxBlk.Text = Cars.CarList[Carindex].CurrentWeather.WeatherType.ToString();
-
+                CarNamelbl.Content = "Car " + (Carindex+1);
+                Binding Speedbinding = new Binding();
+                Speedbinding.Source = Cars.CarList[Carindex].Speed;
+                SpeedTxBlk.SetBinding(TextBlock.TextProperty, Speedbinding);
+                Binding Statusbinding = new Binding();
+                Statusbinding.Source = Cars.CarList[Carindex].VehicleStatus;
+                StatusTxBlk.SetBinding(TextBlock.TextProperty, Statusbinding);
+                Binding Roadbinding = new Binding();
+                Roadbinding.Source = Cars.CarList[Carindex].RoadType;
+                RoadTypeTxBlk.SetBinding(TextBlock.TextProperty, Roadbinding);
+                Binding Lightbinding = new Binding();
+                Lightbinding.Source = Cars.CarList[Carindex].LightsOn;
+                LightsTxBlk.SetBinding(TextBlock.TextProperty, Lightbinding);
+                //WeatherTxBlk.Text = Cars.CarList[Carindex].CurrentWeather.WeatherType.ToString();
+            
         }
+
+		private void Button_Click(object sender, RoutedEventArgs e) {
+            Cars.CarList[0].Speed = 36;
+		}
 	}
 
-    public class Car : EventArgs
+	public class Car : EventArgs
     {
         Random rng = new Random();
         public Car(int id, double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
@@ -69,12 +87,12 @@ namespace AutomatedVehicle
         public int ID { get; set; }
         public double Speed // m/s
         {
-            get { return this.Speed; }
-            set { this.Speed = tempSpeed / 3.6; }
+            get { return tempSpeed; }
+            set { tempSpeed = value / 3.6; }
         }
         public double RouteLength // m
         {
-            get { return this.RouteLength; }
+            get { return tempLength; }
             set { this.RouteLength = tempLength * 1000; }
         } 
         public double RouteProgress { get; set; } // m
@@ -323,14 +341,13 @@ namespace AutomatedVehicle
                 c.CarAccident += UpdateList;
             }
         }
-   //     public static List<Car> GetCars()
-   //     {
-   //         var list = new List<Car>();
-   //          Random rnd = new Random();
-			//for(int i = 1;i <= 30;i++) {
-   //             list.Add(new Car(i,rnd.Next(50,201),0,rnd.Next(50,201)));
-			//}
-   //         return list;
-   //     }
-    }
+		//public static List<Car> GetCars() {
+		//	var list = new List<Car>();
+		//	Random rnd = new Random();
+		//	for(int i = 1;i <= 30;i++) {
+		//		list.Add(new Car(i, rnd.Next(50, 201), 0, rnd.Next(50, 201)));
+		//	}
+		//	return list;
+		//}
+	}
 }

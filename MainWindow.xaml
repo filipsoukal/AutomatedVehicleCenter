@@ -20,8 +20,9 @@
         <ListView ItemsSource="{Binding CarList}" PreviewMouseLeftButtonUp="listView_Click">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding ID}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Car " FontWeight="Bold" FontSize="20"/>
+                        <TextBlock Text="{Binding ID}"  FontSize="20"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -107,24 +108,25 @@
         </Label>
         <TextBlock
             x:Name="SpeedTxBlk"
-            Grid.Column="1"
-            Height="35"  Margin="193,115,83,269" RenderTransformOrigin="0.495,0.687"/>
+            FontSize="20"
+            Grid.Column="1"  Margin="190,115,86,269" RenderTransformOrigin="0.495,0.687"/>
         <TextBlock
             x:Name="StatusTxBlk"
-            Grid.Column="1"
-            Height="35"  Margin="193,150,83,234"/>
+            FontSize="20"
+            Grid.Column="1"  Margin="190,150,86,234"/>
         <TextBlock 
             x:Name="RoadTypeTxBlk"
-            Grid.Column="1"
-            Height="35"  Margin="193,185,83,199"/>
+            FontSize="20"
+            Grid.Column="1"  Margin="190,185,86,199"/>
         <TextBlock
             x:Name="LightsTxBlk"
-            Grid.Column="1"
-            Height="35" Margin="193,220,83,164"/>
+            FontSize="20"
+            Grid.Column="1" Margin="190,220,86,164"/>
         <TextBlock
             x:Name="WeatherTxBlk"
-            Grid.Column="1"
-            Height="35" Margin="193,255,83,129"/>
+            FontSize="20"
+            Grid.Column="1" Margin="190,255,86,129"/>
+        <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="348,293,0,0" VerticalAlignment="Top" Width="93" Click="Button_Click"/>
 
     </Grid>
 </Window>
