@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Timers;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -32,30 +33,43 @@ namespace AutomatedVehicle
             InitializeComponent();
             ChangeUItoCar();
             InitSystems();
-            
         }
         private Car selectedCar;
+        private static void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            ((MainWindow)System.Windows.Application.Current.MainWindow).UpdateLayout();
+        }
         private void listView_Click(object sender, RoutedEventArgs e) {
+            Random random = new Random();
             var item = (sender as ListView).SelectedItem;
             if (item != null) {
                 selectedCar = Cars.CarList[(sender as ListView).SelectedIndex];
                 ChangeUItoCar();
             }
-            
+			
         }
         public void ChangeUItoCar() {
             int Carindex = 0;
             if(selectedCar != null) {
                 Carindex = selectedCar.ID - 1;
             }
-            CarNamelbl.Content = "Car " + (Carindex+1);
-            SpeedTxBlk.Text = Cars.CarList[Carindex].Speed.ToString();
-            StatusTxBlk.Text = Cars.CarList[Carindex].VehicleStatus.ToString();
-            RoadTypeTxBlk.Text = Cars.CarList[Carindex].RoadType.ToString();
-            LightsTxBlk.Text = Cars.CarList[Carindex].LightsOn.ToString();
-            WeatherTxBlk.Text = Cars.CarList[Carindex].CurrentWeather.WeatherType.ToString();
-
+                CarNamelbl.Content = "Car " + (Carindex+1);
+                Binding Speedbinding = new Binding();
+                Speedbinding.Source = Cars.CarList[Carindex].Speed;
+                SpeedTxBlk.SetBinding(TextBlock.TextProperty, Speedbinding);
+                Binding Statusbinding = new Binding();
+                Statusbinding.Source = Cars.CarList[Carindex].VehicleStatus;
+                StatusTxBlk.SetBinding(TextBlock.TextProperty, Statusbinding);
+                Binding Roadbinding = new Binding();
+                Roadbinding.Source = Cars.CarList[Carindex].RoadType;
+                RoadTypeTxBlk.SetBinding(TextBlock.TextProperty, Roadbinding);
+                Binding Lightbinding = new Binding();
+                Lightbinding.Source = Cars.CarList[Carindex].LightsOn;
+                LightsTxBlk.SetBinding(TextBlock.TextProperty, Lightbinding);
+                //WeatherTxBlk.Text = Cars.CarList[Carindex].CurrentWeather.WeatherType.ToString();
+            
         }
+
 
         private void InitSystems() // inicializace class
         {
@@ -67,11 +81,9 @@ namespace AutomatedVehicle
                 c.UpdateVisuals += ChangeUItoCar;
             }
         }
-
-
 	}
 
-    public class Car : EventArgs
+	public class Car : EventArgs
     {
         Random rng = new Random();
         public Car(int id, double speed, RoadTypes roadType, double routeLength, double routeProgress = 0)
@@ -94,6 +106,7 @@ namespace AutomatedVehicle
         public double RouteLength // m
         {
             get { return tempLength; }
+            
             set { tempLength = value * 1000; }
         } 
         public double RouteProgress { get; set; } // m
@@ -350,14 +363,13 @@ namespace AutomatedVehicle
             }
             ControlCenter.NewTowCar += UpdateList;
         }
-   //     public static List<Car> GetCars()
-   //     {
-   //         var list = new List<Car>();
-   //          Random rnd = new Random();
-			//for(int i = 1;i <= 30;i++) {
-   //             list.Add(new Car(i,rnd.Next(50,201),0,rnd.Next(50,201)));
-			//}
-   //         return list;
-   //     }
-    }
+		//public static List<Car> GetCars() {
+		//	var list = new List<Car>();
+		//	Random rnd = new Random();
+		//	for(int i = 1;i <= 30;i++) {
+		//		list.Add(new Car(i, rnd.Next(50, 201), 0, rnd.Next(50, 201)));
+		//	}
+		//	return list;
+		//}
+	}
 }
