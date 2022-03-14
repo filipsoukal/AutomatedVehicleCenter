@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
-// kys filipe
 namespace AutomatedVehicle
 {
 
@@ -90,7 +89,7 @@ namespace AutomatedVehicle
         public Car(int id, double speed, RoadTypes roadType, double routeLength, Weather weather, double routeProgress = 0)
         {
             ID = id;
-            tempSpeed = speed;
+            Speed = speed;
             RoadType = roadType;
             tempLength = routeLength;
             RouteProgress = routeProgress;
@@ -103,7 +102,11 @@ namespace AutomatedVehicle
         public double Speed // m/s
         {
             get { return tempSpeed; }
-            set { tempSpeed = value / 3.6; }
+            set 
+            {
+                tempSpeed = value / 3.6;
+                UpdateVisuals?.Invoke();
+            }
         }
         public double RouteLength // m
         {
@@ -113,6 +116,7 @@ namespace AutomatedVehicle
         } 
         public double RouteProgress { get; set; } // m
         public bool LightsOn { get; set; }
+
 
         public VehicleStatusTypes VehicleStatus { get; set; }
         public RoadTypes RoadType { get; set; }
@@ -130,17 +134,16 @@ namespace AutomatedVehicle
 
         private double tempSpeed = 0, tempLength = 0;
 
-        public void Drive() // hlavni loop pro pohyb vozidla a aktualizace jeho stavu
+        public async void Drive() // hlavni loop pro pohyb vozidla a aktualizace jeho stavu
         {
             bool go = true;
             do
             {
                 RouteProgress = RouteProgress + Speed; // vyřešit převod z km na m
                 go = RouteProgress >= RouteLength ? false : true;
-                if (CheckCarAccident()) CarAccident(this.ID);
-                if (RoadChanged()) RoadChange(this.ID);
-                UpdateVisuals();
-                System.Threading.Thread.Sleep(tick);
+                if (CheckCarAccident()) CarAccident?.Invoke(this.ID);
+                if (RoadChanged()) RoadChange?.Invoke(this.ID);
+                await Task.Delay(tick);
             } while (go);
         }
 
@@ -309,7 +312,7 @@ namespace AutomatedVehicle
 
         public WeatherCenter() => ChangeWeather();
         
-        public void ChangeWeather() // hlavni loop pro zmenu pocasi
+        public async void ChangeWeather() // hlavni loop pro zmenu pocasi
         {
             const int chance = 150, tick = 1000;
             while (true)
@@ -319,7 +322,7 @@ namespace AutomatedVehicle
                     currentWeather = GetWeather();
                     WeatherUpdate(currentWeather);
                 }
-                System.Threading.Thread.Sleep(tick);
+                await Task.Delay(tick);
             }
         }
 

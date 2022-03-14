@@ -21,7 +21,6 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Car " FontWeight="Bold" FontSize="20"/>
                         <TextBlock Text="{Binding ID}"  FontSize="20"/>
                     </StackPanel>
                 </DataTemplate>
