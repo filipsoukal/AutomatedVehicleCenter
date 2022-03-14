@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
-
+// kys filipe
 namespace AutomatedVehicle
 {
 
@@ -139,7 +139,7 @@ namespace AutomatedVehicle
                 go = RouteProgress >= RouteLength ? false : true;
                 if (CheckCarAccident()) CarAccident(this.ID);
                 if (RoadChanged()) RoadChange(this.ID);
-                //UpdateVisuals();
+                UpdateVisuals();
                 System.Threading.Thread.Sleep(tick);
             } while (go);
         }
