@@ -17,7 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <ListView ItemsSource="{Binding CarList}" PreviewMouseLeftButtonUp="listView_Click">
+        <ListView ItemsSource="{Binding CarList}" PreviewMouseLeftButtonUp="listView_Click" Name="Lstv">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">

@@ -32,6 +32,9 @@ namespace AutomatedVehicle
             InitSystems();
             InitializeComponent();
             ChangeUItoCar();
+            Binding binding = new Binding();
+            binding.Source = Cars.CarList;
+            Lstv.SetBinding(ListView.ItemsSourceProperty, binding);
         }
         private Car selectedCar;
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -48,11 +51,11 @@ namespace AutomatedVehicle
 			
         }
         public void ChangeUItoCar() {
-            int Carindex = 0;
+            int Carindex = 1;
             if(selectedCar != null) {
-                Carindex = selectedCar.ID - 1;
+                Carindex = selectedCar.ID;
             }
-                CarNamelbl.Content = "Car " + (Carindex+1);
+                CarNamelbl.Content = "Car " + (Carindex);
                 Binding Speedbinding = new Binding();
                 Speedbinding.Source = Cars.CarList[Carindex].Speed;
                 SpeedTxBlk.SetBinding(TextBlock.TextProperty, Speedbinding);
@@ -111,7 +114,6 @@ namespace AutomatedVehicle
         public double RouteLength // m
         {
             get { return tempLength; }
-            
             set { tempLength = value * 1000; }
         } 
         public double RouteProgress { get; set; } // m
@@ -268,7 +270,7 @@ namespace AutomatedVehicle
         {
             Random rng = new Random();
             List<Car> retCars = new List<Car>();
-            for (int i = 0; i < numOfCars; i++)
+            for (int i = 1; i <= numOfCars; i++)
             {
                 Car newCar = new Car(i, 50, Car.RoadTypes.Normal, rng.Next(10, 151), WeatherCenter.currentWeather);
                 retCars.Add(newCar);
