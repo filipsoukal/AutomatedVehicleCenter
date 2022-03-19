@@ -30,11 +30,12 @@ namespace AutomatedVehicle
             InitializeComponent();
             ChangeUItoCar();
         }
-        private Car selectedCar;
+        
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             ((MainWindow)System.Windows.Application.Current.MainWindow).UpdateLayout();
         }
+        private Car selectedCar;
         private void listView_Click(object sender, RoutedEventArgs e) {
             Random random = new Random();
             var item = (sender as ListView).SelectedItem;
