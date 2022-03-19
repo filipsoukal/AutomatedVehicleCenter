@@ -17,11 +17,10 @@
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <ListView ItemsSource="{Binding CarList}" PreviewMouseLeftButtonUp="listView_Click">
+        <ListView ItemsSource="{Binding CarList}" PreviewMouseLeftButtonUp="listView_Click" Name="Lstv">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Car " FontWeight="Bold" FontSize="20"/>
                         <TextBlock Text="{Binding ID}"  FontSize="20"/>
                     </StackPanel>
                 </DataTemplate>
@@ -126,7 +125,6 @@
             x:Name="WeatherTxBlk"
             FontSize="20"
             Grid.Column="1" Margin="190,255,86,129"/>
-        <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="348,293,0,0" VerticalAlignment="Top" Width="93" Click="Button_Click"/>
 
     </Grid>
 </Window>
